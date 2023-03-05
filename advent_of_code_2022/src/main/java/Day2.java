@@ -96,6 +96,7 @@ public class Day2 {
             totalScore1 += calculateScore(round.get(0), round.get(1));
             totalScore2 += calculateScore2(round.get(0), round.get(1));
         }
+            //Answers to part 1 and 2
         System.out.println(totalScore1);
         System.out.println(totalScore2);
     }
