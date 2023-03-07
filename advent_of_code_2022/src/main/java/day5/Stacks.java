@@ -33,7 +33,6 @@ public class Stacks {
     }
 
     public void pushMultiple(int stackIndex, List<Character> elements){
-    
         for (Character c : elements) {
             this.push(stackIndex, c);
         }
@@ -45,9 +44,5 @@ public class Stacks {
 
     public Character peek(int stack, int index){
         return this.getStack(stack).lastElement();
-    }
-
-    public static void main(String[] args) {
-        System.out.println('A' - 'B');
     }
 }
