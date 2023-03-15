@@ -53,7 +53,7 @@ public class Solution {
         int avalibleSpace = totalDiskSpace - usedSpace;
 
         int spaceNeeded = 30000000 - avalibleSpace;
-        System.out.println(spaceNeeded);
+        // System.out.println(spaceNeeded);
 
         fileSystem.setPointerToRootFolder();
         List<Integer> possibleSpaceSavings = fileSystem.getSums(fileSystem.getPointer(), new ArrayList<>());

@@ -1,0 +1,24 @@
+package day10;
+
+public class Main {
+    
+    public static void main(String[] args) {
+        String input = InputReader.getInput("input.txt");
+        Register x = new Register();
+
+        for (String line : input.split("\n")) {
+            if(line.equals("noop")){
+                x.noop();
+            }
+            else if (line.startsWith("add")){
+                int value = Integer.parseInt(line.substring(5));
+                x.add(value);
+            }
+        }
+
+        System.out.println(x.getlistener().getSignalStrength());
+
+
+        System.out.println(x.getlistener().getDrawing());
+    }
+}
