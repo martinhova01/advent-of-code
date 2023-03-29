@@ -1,3 +1,4 @@
+package day6;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -5,7 +6,7 @@ public class Day6 {
     
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("puzzleInputs/day6.txt");
+        String input = InputReader.getInput("day6.txt");
 
         int marker = 0;
         int index = 13;

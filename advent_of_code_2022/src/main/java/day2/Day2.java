@@ -1,3 +1,4 @@
+package day2;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class Day2 {
     }
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("puzzleInputs/day2.txt");
+        String input = InputReader.getInput("day2.txt");
         List<List<String>> rounds = input.lines().map(line -> Arrays.stream(line.split(" ")).toList()).toList();
         
 

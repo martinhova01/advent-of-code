@@ -1,3 +1,4 @@
+package day3;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class Day3 {
 
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("puzzleInputs/day3.txt");
+        String input = InputReader.getInput("day3.txt");
         String[] rucksacks = input.split("\n");
 
             //Part 1

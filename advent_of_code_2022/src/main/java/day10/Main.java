@@ -16,9 +16,10 @@ public class Main {
             }
         }
 
+            //part 1
         System.out.println(x.getlistener().getSignalStrength());
 
-
+            //part 2
         System.out.println(x.getlistener().getDrawing());
     }
 }

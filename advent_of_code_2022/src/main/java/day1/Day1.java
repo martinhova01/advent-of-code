@@ -1,3 +1,4 @@
+package day1;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +56,7 @@ public class Day1{
     }
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("puzzleInputs/day1.txt");
+        String input = InputReader.getInput("day1.txt");
         System.out.println(d1p1(input));
         System.out.println(d1p2(input));
     }
