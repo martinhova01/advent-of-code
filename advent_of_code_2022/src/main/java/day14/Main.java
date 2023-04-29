@@ -72,7 +72,7 @@ public class Main {
                     g.spawnSand();
                 }
             }
-            // g.print();
+            g.print();
             System.out.println("Part 2: " + g.countSand());
         }
 
