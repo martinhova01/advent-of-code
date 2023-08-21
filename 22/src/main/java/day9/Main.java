@@ -3,16 +3,28 @@ package day9;
 public class Main {
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("input.txt");
-        Snake snake = new Snake();
+        String input = InputReader.getInput("testinput.txt");
+        SnakeP1 snakeP1 = new SnakeP1();
+        SnakeP2 snakeP2 = new SnakeP2();
 
         for (String line : input.split("\n")){
             char direction = line.split(" ")[0].charAt(0);
             int number = Integer.parseInt(line.split(" ")[1]);
 
-            snake.moveHead(direction, number);
+                //part 1
+            snakeP1.moveHead(direction, number);
+
+                //part 2
+            for (int i = 0; i < number; i++){
+                snakeP2.moveHead(direction);
+            }
         }
 
-        System.out.println(snake.getVisitedPositions().size());
+        System.out.println("Part1 : " + snakeP1.getVisitedPositions().size());
+        System.out.println("part 2 : " + snakeP2.getNumberOfVisitedPositions());
+        snakeP2.printVisitedPos();
+
+        //BUG part 2:
+        //The tail visits too many positions
     }
 }

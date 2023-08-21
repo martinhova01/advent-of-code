@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Snake {
+public class SnakeP1 {
     
     private Position head;
     private Position tail;
@@ -23,7 +23,7 @@ public class Snake {
     private static final Integer[][] DIAGONAL_DIRECTIONS = {UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
     private final Map<Character, Integer[]> directions = new HashMap<>(Map.of('U', UP, 'D', DOWN, 'R', RIGHT, 'L', LEFT));
 
-    public Snake(){
+    public SnakeP1(){
         head = new Position(0, 0);
         tail = new Position(0, 0);
         startPos = new Position(0, 0);
@@ -106,7 +106,7 @@ public class Snake {
     }
 
     public static void main(String[] args) {
-        Snake snake = new Snake();
+        SnakeP1 snake = new SnakeP1();
 
         snake.moveHead('U', 1);
         snake.moveHead('R', 2);

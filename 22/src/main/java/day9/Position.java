@@ -4,10 +4,12 @@ public class Position {
     
     private int x;
     private int y;
+    private TailListener listener;
 
     public Position(int x, int y){
         this.x = x;
         this.y = y;
+
     }
 
     public int getX() {
@@ -24,6 +26,10 @@ public class Position {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void setListner(TailListener listener){
+        this.listener = listener;
     }
     
     public boolean equals(Position otherPos){
@@ -44,5 +50,14 @@ public class Position {
             }
         }
         return false;
+    }
+
+    public void moveDirection(Direction dir){
+        this.x += dir.getX();
+        this.y += dir.getY();
+
+        if(this.listener != null){
+            listener.addVisitedPos(new Position(this.getX(), this.getY()));
+        }
     }
 }
