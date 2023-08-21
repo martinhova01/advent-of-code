@@ -18,11 +18,13 @@ public class Main {
             for (int i = 0; i < number; i++){
                 snakeP2.moveHead(direction);
             }
+            System.out.println(direction + "" + number);
+            snakeP2.printState();
         }
 
         System.out.println("Part1 : " + snakeP1.getVisitedPositions().size());
         System.out.println("part 2 : " + snakeP2.getNumberOfVisitedPositions());
-        snakeP2.printVisitedPos();
+        // snakeP2.printVisitedPos();
 
         //BUG part 2:
         //The tail visits too many positions

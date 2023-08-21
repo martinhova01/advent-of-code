@@ -96,4 +96,31 @@ public class SnakeP2 {
     public void printVisitedPos(){
         listener.printVisitedPos();
     }
+
+    public void printState() {
+        List<List<Character>> result = new ArrayList<>();
+        for (int i = 0; i < 40; i++){
+            List<Character> line = new ArrayList<>();
+            for (int j = 0; j < 40; j++){
+                line.add('.');
+            }
+            result.add(line);
+        }
+        for(int i = body.size() - 1; i > -1; i--){
+            int x = body.get(i).getX() + 15;
+            int y = body.get(i).getY() + 15;
+
+            result.get(y).set(x, Integer.toString(i).charAt(0));
+        }
+        String resultStr = "";
+        for (int i = result.size() - 1; i > -1; i--){
+            List<Character> line = result.get(i);
+            for(char c : line){
+                resultStr += c;
+            }
+            resultStr += "\n";
+        }
+
+        System.out.println(resultStr);
+    }
 }
