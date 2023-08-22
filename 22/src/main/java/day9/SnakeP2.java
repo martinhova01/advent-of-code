@@ -50,7 +50,7 @@ public class SnakeP2 {
             Position p2 = body.get(i);
 
             if (isTwoStepsApart(p1, p2)){
-                p2.moveDirection(STRAIGHT_DIRECTIONS.get(direction));
+                p2.moveDirection(correctStraightDirection(p1, p2));
             }
 
             else if(!p1.isTouching(p2) && (p2.getX() != p1.getX() && p2.getY() != p1.getY())){
@@ -61,12 +61,26 @@ public class SnakeP2 {
     }
 
     private Direction correctDiogonalDirection(Position head, Position tail) {
-        
 
         for (Direction dir : DIAGONAL_DIRECTIONS){
             Position tempPos = new Position(tail.getX(), tail.getY());
             tempPos.setX(tempPos.getX() + dir.getX());
             tempPos.setY(tempPos.getY() + dir.getY());
+
+            if (tempPos.isTouching(head)){
+                return dir;
+            }
+        }
+        return null;
+
+    }
+
+    private Direction correctStraightDirection(Position head, Position tail) {
+
+        for (Direction dir : STRAIGHT_DIRECTIONS.values()){
+            Position tempPos = new Position(tail.getX(), tail.getY());
+            tempPos.setX(tempPos.getX() + dir.getX() * 2);
+            tempPos.setY(tempPos.getY() + dir.getY() * 2);
 
             if (tempPos.isTouching(head)){
                 return dir;

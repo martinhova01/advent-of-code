@@ -3,7 +3,7 @@ package day9;
 public class Main {
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("testinput.txt");
+        String input = InputReader.getInput("input.txt");
         SnakeP1 snakeP1 = new SnakeP1();
         SnakeP2 snakeP2 = new SnakeP2();
 
@@ -18,15 +18,9 @@ public class Main {
             for (int i = 0; i < number; i++){
                 snakeP2.moveHead(direction);
             }
-            System.out.println(direction + "" + number);
-            snakeP2.printState();
         }
 
         System.out.println("Part1 : " + snakeP1.getVisitedPositions().size());
         System.out.println("part 2 : " + snakeP2.getNumberOfVisitedPositions());
-        // snakeP2.printVisitedPos();
-
-        //BUG part 2:
-        //The tail visits too many positions
     }
 }
