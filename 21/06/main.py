@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 def part1(inputfilename):
     with open(inputfilename) as f:
             #parse input and cast to ints
@@ -34,9 +37,9 @@ def part2(inputfilename):
      
 def main(test = False):
     if test:
-        filename = '21/day6/testinput.txt'
+        filename = str(Path(__file__).parent / "testinput.txt")
     else:
-        filename = '21/day6/input.txt'
+        filename = str(Path(__file__).parent / "input.txt")
         
     print(f"part 1 : {part1(filename)}")
     print(f"part 2 : {part2(filename)}")

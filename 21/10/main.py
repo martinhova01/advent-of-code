@@ -1,4 +1,5 @@
 from collections import deque
+from pathlib import Path
 validPairs = {"(": ")", "{": "}", "[": "]", "<": ">"}
 def part1(filename):
     data = [x for x in open(filename).read().split("\n")]
@@ -56,9 +57,9 @@ def part2(filename):
     
 def main(test = False):
     if test:
-        filename = '21/day10/testinput.txt'
+        filename = str(Path(__file__).parent / "testinput.txt")
     else:
-        filename = '21/day10/input.txt'
+        filename = str(Path(__file__).parent / "input.txt")
         
     print(f"part 1 : {part1(filename)[0]}")
     print(f"part 2 : {part2(filename)}")
