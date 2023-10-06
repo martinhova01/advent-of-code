@@ -1,5 +1,4 @@
 import math
-from pathlib import Path
 class Crab:
     def __init__(self, pos):
         self.pos = pos
@@ -53,11 +52,7 @@ def solve(inputfilename, part):
 
 
 def main(test = False):
-    if test:
-        filename = str(Path(__file__).parent / "testinput.txt")
-    else:
-        filename = str(Path(__file__).parent / "input.txt")
-        
+    filename = "testinput.txt" if test else "input.txt"     
     print(f"part 1 : {solve(filename, 1)}")
     print(f"part 2 : {solve(filename, 2)}")
     

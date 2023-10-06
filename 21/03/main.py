@@ -1,6 +1,3 @@
-from pathlib import Path
-
-
 def part1(inputfilename):
     with open(inputfilename) as f:
         lines = f.readlines()
@@ -90,11 +87,7 @@ def findRating(numbers, mostCommon):
     return numbers[0]
 
 def main(test = False):
-    if test:
-        filename = str(Path(__file__).parent / "testinput.txt")
-    else:
-        filename = str(Path(__file__).parent / "input.txt")
-        
+    filename = "testinput.txt" if test else "input.txt"  
     print(f"part 1 : {part1(filename)}")
     print(f"part 2 : {part2(filename)}")
     

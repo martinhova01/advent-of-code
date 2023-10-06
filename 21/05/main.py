@@ -1,5 +1,4 @@
 import math
-from pathlib import Path
 def solve(inputfilename, part2 = False):
     data = [[0 for i in range(1000)] for x in range(1000)]
     with open(inputfilename) as f:
@@ -54,11 +53,7 @@ def solve(inputfilename, part2 = False):
 
 
 def main(test = False):
-    if test:
-        filename = str(Path(__file__).parent / "testinput.txt")
-    else:
-        filename = str(Path(__file__).parent / "input.txt")
-        
+    filename = "testinput.txt" if test else "input.txt"  
     print(f"part 1 : {solve(filename, False)}")
     print(f"part 2 : {solve(filename, True)}")
     

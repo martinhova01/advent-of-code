@@ -1,4 +1,3 @@
-from pathlib import Path
 def part1(inputfilename):
     current = 0
     next = 0
@@ -38,13 +37,8 @@ def part2(inputfilename):
     return counter
 
 def main(test = False):
-    if test:
-        filename = str(Path(__file__).parent / "testinput.txt")
-    else:
-        filename = str(Path(__file__).parent / "input.txt")
-        
+    filename = "testinput.txt" if test else "input.txt"   
     print(f"part 1 : {part1(filename)}")
     print(f"part 2 : {part2(filename)}")
-    
     
 main()
