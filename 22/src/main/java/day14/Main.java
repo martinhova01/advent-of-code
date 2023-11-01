@@ -1,11 +1,13 @@
 package day14;
 
+import util.InputReader;
+
 public class Main {
 
     static boolean part1 = false;
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("input.txt");
+        String input = InputReader.getInput("../day14/input.txt");
         String[] lines = input.split("\n");
 
         Grid g = new Grid(200, 500);

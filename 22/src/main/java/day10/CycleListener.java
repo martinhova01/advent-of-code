@@ -20,7 +20,7 @@ public class CycleListener {
             drawing += "#";
         }
         else{
-            drawing += ".";
+            drawing += " ";
         }
     }
 

@@ -2,6 +2,7 @@ package day2;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import util.InputReader;
 
 public class Day2 {
     public static final Map<String, Integer> shapeScores1 = Map.of("X", 1, "Y", 2, "Z", 3);
@@ -87,7 +88,7 @@ public class Day2 {
     }
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("day2.txt");
+        String input = InputReader.getInput("../day2/day2.txt");
         List<List<String>> rounds = input.lines().map(line -> Arrays.stream(line.split(" ")).toList()).toList();
         
 

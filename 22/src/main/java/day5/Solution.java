@@ -3,6 +3,7 @@ package day5;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import util.InputReader;
 
 public class Solution {
 
@@ -19,7 +20,7 @@ public class Solution {
 
     public static void main(String[] args) {
         Stacks stacks = new Stacks();
-        String input = InputReader.getInput("day5.txt");
+        String input = InputReader.getInput("../day5/day5.txt");
 
         String setup = input.split("\n\n")[0];
         String procedure = input.split("\n\n")[1];

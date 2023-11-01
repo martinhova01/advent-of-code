@@ -2,6 +2,8 @@ package day3;
 import java.util.HashSet;
 import java.util.Set;
 
+import util.InputReader;
+
 public class Day3 {
     
     private static String priorities = "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -54,7 +56,7 @@ public class Day3 {
 
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("day3.txt");
+        String input = InputReader.getInput("../day3/day3.txt");
         String[] rucksacks = input.split("\n");
 
             //Part 1

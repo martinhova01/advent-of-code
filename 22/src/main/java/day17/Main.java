@@ -2,12 +2,14 @@ package day17;
 
 import java.util.List;
 
+import util.InputReader;
+
 public class Main {
     
     public static void main(String[] args) {
         List<Rock> rocks = List.of(new Minus(), new Pluss(), new L(), new I(), new Square());
         int width = 7;
-        String input = InputReader.getInput("input.txt");
+        String input = InputReader.getInput("../day17/input.txt");
         input = input.strip();
 
         
@@ -41,12 +43,7 @@ public class Main {
             }
         }
         System.out.println("Part 1: " + c.getHeight());
-        c.write(3200);
-
-
-        //2976 -> too low
-
-        
+        // c.write(3200);
 
 
     }

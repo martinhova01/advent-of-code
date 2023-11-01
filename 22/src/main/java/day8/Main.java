@@ -2,13 +2,13 @@ package day8;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.InputReader;
 
 
 public class Main {
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("input.txt");
-        // System.out.println(input);
+        String input = InputReader.getInput("../day8/input.txt");
         Grid grid = new Grid();
 
         for(String line : input.split("\n")){
@@ -30,10 +30,6 @@ public class Main {
             //solution part 1
         System.out.println("Part 1: " + visibleTrees);
 
-/*
- * 
- * 
- */
 
         int largetsScenicScore = 0;
         for (int i = 0; i < grid.getGrid().size(); i++) {

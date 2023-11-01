@@ -1,9 +1,11 @@
 package day10;
 
+import util.InputReader;
+
 public class Main {
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("input.txt");
+        String input = InputReader.getInput("../day10/input.txt");
         Register x = new Register();
 
         for (String line : input.split("\n")) {

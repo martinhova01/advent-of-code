@@ -3,10 +3,12 @@ package day12;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.InputReader;
+
 public class Main {
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("input.txt");
+        String input = InputReader.getInput("../day12/input.txt");
         int rows = input.split("\n").length;
         int cols = -1;
 

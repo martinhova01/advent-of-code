@@ -1,5 +1,6 @@
 package day17;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ public class Chamber {
     }
 
     public void write(int rows) {
-        try (FileWriter fileWriter = new FileWriter("C:/Users/marti/Desktop/advent-of-code-2022/advent_of_code_2022/src/main/java/day17/write.txt")) {
+        try (FileWriter fileWriter = new FileWriter(new File("write.txt"))) {
             String data = print(rows);
             
             fileWriter.write(data);

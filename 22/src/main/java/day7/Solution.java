@@ -2,12 +2,13 @@ package day7;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.InputReader;
 
 public class Solution {
     
 
     public static void main(String[] args) {
-        String input = InputReader.getInput("day7.txt");
+        String input = InputReader.getInput("../day7/day7.txt");
         FileSystem fileSystem = new FileSystem();
         boolean ls = false;
 

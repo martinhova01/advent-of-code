@@ -2,11 +2,12 @@ package day4;
 
 import java.util.Arrays;
 import java.util.List;
+import util.InputReader;
 
 public class Solution {
     
     public static void main(String[] args) {
-        String input = InputReader.getInput("day4.txt");
+        String input = InputReader.getInput("../day4/day4.txt");
         String[] pairs = input.split("\n");
 
         int containsCounter = 0;
