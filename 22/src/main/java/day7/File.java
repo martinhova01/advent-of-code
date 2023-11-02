@@ -15,4 +15,13 @@ public class File {
     public  int getSize(){
         return this.size;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Folder getParent() {
+        return parent;
+    }
+    
 }
