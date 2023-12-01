@@ -5,10 +5,10 @@ class Solution():
         self.data = None
         
     def part1(self):
-        return -1
+        return None
     
     def part2(self):
-        return -1
+        return None
     
     
 def main():
