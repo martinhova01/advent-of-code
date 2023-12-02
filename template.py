@@ -1,5 +1,5 @@
 class Solution():
-    def __init__(self, test=False) -> None:
+    def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
         self.data = None

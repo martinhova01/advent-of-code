@@ -1,23 +1,20 @@
 class Solution():
-    def __init__(self, test=False) -> None:
+    def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
         self.data = [self.parseLine(line) for line in open(self.filename).read().split("\n")]
         self.limits = {"red": 12, "green": 13, "blue": 14}
         
     def part1(self):
-        ids = set()
-        for i  in range(len(self.data)):
-            game = self.data[i]
-            if game["red"] <= self.limits["red"] and game["green"] <= self.limits["green"] and game["blue"] <= self.limits["blue"]:
-                ids.add(i + 1)
-        return sum(ids)
+        return sum(i + 1 if self.isPossible(i) else 0 for i in range(len(self.data)))
+    
+    def isPossible(self, i):
+        return self.data[i]["red"] <= self.limits["red"] \
+            and self.data[i]["green"] <= self.limits["green"] \
+            and self.data[i]["blue"] <= self.limits["blue"]
     
     def part2(self):
-        res = 0
-        for game in self.data:
-            res += game["red"] * game["green"] * game["blue"]
-        return res
+        return sum(game["red"] * game["green"] * game["blue"] for game in self.data)
     
     def parseLine(self, line):
         line = line.split(": ")[1]
@@ -28,8 +25,7 @@ class Solution():
             for datapair in datapairs:
                 color = datapair.split(" ")[1]
                 number = int(datapair.split(" ")[0])
-                res[color] = max(res[color], number)
-            
+                res[color] = max(res[color], number)  
         return res
                 
     
