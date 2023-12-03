@@ -59,7 +59,7 @@ class Solution():
 def main():
     s = Solution(test=True)
     print("---TEST---")
-    print(f"part 1: {s.part1()}")
+    # print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}\n")
     
     s = Solution()
