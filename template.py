@@ -1,3 +1,4 @@
+import time
 class Solution():
     def __init__(self, test=False):
         self.test = test
@@ -12,6 +13,8 @@ class Solution():
     
     
 def main():
+    start = time.perf_counter()
+    
     s = Solution(test=True)
     print("---TEST---")
     print(f"part 1: {s.part1()}")
@@ -21,5 +24,7 @@ def main():
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
+    
+    print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
 main()

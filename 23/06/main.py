@@ -1,11 +1,11 @@
 from functools import reduce
+import time
 
 class Solution():
     def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
         self.data = [self.parseLine(line) for line in open(self.filename).read().split("\n")]
-        print(self.data)
         
     def parseLine(self, line):
         return [int(x) for x in line.split(":")[1].split()]
@@ -38,6 +38,8 @@ class Solution():
         return c
     
 def main():
+    start = time.perf_counter()
+
     s = Solution(test=True)
     print("---TEST---")
     print(f"part 1: {s.part1()}")
@@ -47,5 +49,7 @@ def main():
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
+    
+    print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
 main()
