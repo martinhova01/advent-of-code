@@ -1,4 +1,5 @@
 import time
+from collections import Counter
 
 class Hand():
     def __init__(self, cards, bid, part2=False):
@@ -6,17 +7,11 @@ class Hand():
         self.bid = bid
         self.cardTypes = ["A", "K","Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
         self.type = self.findType(self.cards) if not part2 else self.findType2()
-        self.part2 = part2
         
     def findType2(self):
         self.cardTypes = ["A", "K","Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"]
-        
-        count = {}
-        for c in self.cards:
-            if c not in count:
-                count[c] = 0
-            count[c] += 1
-           
+
+        count = Counter(self.cards)
         mostFrequentNotJStr = "J"
         mostFrequentNotJ = 0
         for key, value in count.items():
@@ -33,11 +28,7 @@ class Hand():
         
         
     def findType(self, cards):
-        count = {}
-        for c in cards:
-            if c not in count:
-                count[c] = 0
-            count[c] += 1
+        count = Counter(cards)
         
         if 5 in count.values():
             return 0
@@ -75,22 +66,17 @@ class Solution():
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
         self.data = [Hand(line.split(" ")[0], int(line.split(" ")[1])) for line in open(self.filename).read().split("\n")]
-        
+        self.data2 = [Hand(line.split(" ")[0], int(line.split(" ")[1]), part2=True) for line in open(self.filename).read().split("\n")]
         
     def part1(self):
-        sortedhands = sorted(self.data)    
-        s = 0
-        for i in range(len(sortedhands), 0, -1):
-            s += sortedhands[len(sortedhands) - i].bid * i
-        return s
+        return self.getScore(self.data)
     
     def part2(self):
-        self.data = [Hand(line.split(" ")[0], int(line.split(" ")[1]), part2=True) for line in open(self.filename).read().split("\n")]
-        sortedhands = sorted(self.data)
-        s = 0
-        for i in range(len(sortedhands), 0, -1):
-            s += sortedhands[len(sortedhands) - i].bid * i  
-        return s
+        return self.getScore(self.data2)
+    
+    def getScore(self, hands):
+        sortedhands = sorted(hands)
+        return sum(sortedhands[len(sortedhands) - i].bid * i for i in range(len(sortedhands), 0, -1))
     
     
 def main():
