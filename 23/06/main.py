@@ -1,5 +1,6 @@
 from functools import reduce
 import time
+import numpy as np
 
 class Solution():
     def __init__(self, test=False):
@@ -30,12 +31,9 @@ class Solution():
             dist += str(self.data[1][i])
             
         time, dist = int(time), int(dist)
-        c = 0
-        for j in range(time):
-            d  = j * (time - j)
-            if d > dist:
-                c += 1   
-        return c
+        f = [-1, time, -dist] #f(x) = -x^2 + time * x - dist , where x is time holding button
+        a, b = np.roots(f)
+        return abs(int(a) - int(b))
     
 def main():
     start = time.perf_counter()
