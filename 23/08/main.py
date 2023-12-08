@@ -40,7 +40,7 @@ class Solution():
         for startNode in self.data.keys():
             if startNode.endswith("A"):
                 dist.append(self.distToNextEndNode(startNode))     
-        return math.lcm(*(x for x in dist))
+        return math.lcm(*dist)
              
 def main():
     start = time.perf_counter()
