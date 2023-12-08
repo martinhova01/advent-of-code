@@ -1,5 +1,6 @@
 import math
 import time
+import re
 
 class Solution():
     def __init__(self, test=False):
@@ -13,10 +14,8 @@ class Solution():
         sections = open(self.filename).read().split("\n\n")
         self.instructions = sections[0]
         for line in sections[1].split("\n"):
-            nodes = line.split(" = ")
-            left = nodes[1].split(", ")[0][1:]
-            right = nodes[1].split(", ")[1][:-1]
-            self.data[nodes[0]] = (left, right)
+            nodes = re.findall(r"\w+", line)
+            self.data[nodes[0]] = (nodes[1], nodes[2])
         
         
     def part1(self):
