@@ -8,6 +8,7 @@ class Solution():
         self.data = [[x for x in line] for line in open(self.filename).read().split("\n")]
         self.startPos = self.findStartPos()
         self.startSymbol = "F" if test else "|"
+        self.data[self.startPos[1]][self.startPos[0]] = self.startSymbol # replace S with correct symbol
         dirs = {"NORTH": (0, -1), "SOUTH": (0, 1), "EAST": (1, 0), "WEST": (-1, 0)}
         self.pipes = {
                         "|": {dirs["NORTH"], dirs["SOUTH"]},
@@ -27,9 +28,8 @@ class Solution():
                 
     def getCycle(self):
         q = deque()
-        visited = {self.startPos}
-        for dir in self.pipes[self.startSymbol]:
-            q.append((self.startPos[0] + dir[0], self.startPos[1] + dir[1]))
+        q.append(self.startPos)
+        visited = set()
             
         while q:
             x, y = q.popleft()
@@ -46,7 +46,7 @@ class Solution():
     
     def containsPoint(self, x, y, cycle):
         crossings = 0
-        while x > 0 and y > 0 and y < len(self.data):
+        while x > 0:
             if (x - 1, y) not in cycle:
                 x -= 1
                 continue
@@ -59,9 +59,8 @@ class Solution():
     def part1(self):
         return int(len(self.getCycle()) / 2)     
     
-        #A point is inside the cycle if you have to cross a odd number of edged to get to the outside of the graph
+        #A point is inside the cycle if you have to cross a odd number of edged to get to the outside of the cycle
     def part2(self):
-        self.data[self.startPos[1]][self.startPos[0]] = self.startSymbol # replace S with correct symbol
         s = 0
         cycle = self.getCycle()
         for y in range(len(self.data)):
