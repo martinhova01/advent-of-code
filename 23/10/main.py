@@ -24,8 +24,6 @@ class Solution():
                 if self.data[y][x] == "S":
                     return (x, y)
         
-    def part1(self):
-        return int(len(self.getCycle()) / 2)     
                 
     def getCycle(self):
         q = deque()
@@ -33,9 +31,7 @@ class Solution():
         for dir in self.pipes[self.startSymbol]:
             q.append((self.startPos[0] + dir[0], self.startPos[1] + dir[1]))
             
-        d = 0
         while q:
-            d += 1
             x, y = q.popleft()
             visited.add((x, y))
             c = self.data[y][x]
@@ -59,6 +55,9 @@ class Solution():
                 crossings += 1
             x -= 1
         return crossings % 2 == 1
+    
+    def part1(self):
+        return int(len(self.getCycle()) / 2)     
     
         #A point is inside the cycle if you have to cross a odd number of edged to get to the outside of the graph
     def part2(self):
