@@ -1,4 +1,15 @@
+import sys
 import time
+import itertools
+from collections import Counter, defaultdict, deque
+import networkx as nx
+from tqdm import tqdm
+import numpy as np
+import re
+
+sys.path.append("../..")
+from utils import adjacent4, adjacent8, directions4, directions8
+
 class Solution():
     def __init__(self, test=False):
         self.test = test
