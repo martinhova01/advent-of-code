@@ -12,3 +12,6 @@ def adjacent4(x: int, y: int) -> list:
 
 def adjacent8(x: int, y: int) -> list:
     return [(x + dx, y + dy) for dx, dy in directions8()]
+
+def manhattanDist(x1, y1, x2, y2):
+    return abs(x1 - x2) + abs(y1 - y2)
