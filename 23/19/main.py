@@ -1,6 +1,5 @@
 from collections import deque
 import time
-from tqdm import tqdm
 import re
 
 class Part:
@@ -13,30 +12,13 @@ class Solution():
         self.filename = "testinput.txt" if self.test else "input.txt"
         self.workflows = {}
         self.parts = []
-        self.mapping = {}
         self.parse()
-        self.createMap()
-        print(self.mapping)
-        
-    def createMap(self):
-        for workflow in self.workflows.values():
-            for i in range(len(workflow)):
-                if ">" in workflow[i] or "<" in workflow[i]:
-                    statement = workflow[i]
-                    isTrue = workflow[i + 1]
-                    if ">" not in isTrue and "<" not in isTrue and isTrue != "A" and isTrue != "R":
-                        isTrue = self.workflows[isTrue][0]
-                    isFalse = workflow[i + 2]
-                    if ">" not in isFalse and "<" not in isFalse and isFalse != "A" and isFalse != "R":
-                        isFalse = self.workflows[isFalse][0]
-                    self.mapping[statement] = (isTrue, isFalse)
         
     def parse(self):
         workflows, parts = open(self.filename).read().split("\n\n")
         
         for line in workflows.split("\n"):
             label, rules = line.split("{")
-            # rules = rules[:-1].split(",")
             rules = re.split(r",|:", rules[:-1])
             self.workflows[label] = rules
             
@@ -44,88 +26,83 @@ class Solution():
             vals = [int(x) for x in re.findall(r"\d+", line)]
             self.parts.append(Part(*vals))
             
-    # def acceptsPart(self, part):
-    #     workflow = self.workflows["in"]
-        
-    #     while True:
-    #         nextFlow = self.getNextFlow(workflow, part)
-    #         if nextFlow == "A":
-    #             return True
-    #         elif nextFlow == "R":
-    #             return False
-    #         workflow = self.workflows[nextFlow]
+    def acceptsPart(self, part):
+        workflow = self.workflows["in"]
+        while True:
+            nextFlow = self.getNextFlow(workflow, part)
+            if nextFlow == "A":
+                return True
+            elif nextFlow == "R":
+                return False
+            workflow = self.workflows[nextFlow]
             
             
-    # def getNextFlow(self, workflow, part):
-    #     i = 0
-    #     while ">" in workflow[i] or "<" in workflow[i]:
-    #         statement, ifTrue = workflow[i].split(":")
-    #         if ">" in statement:
-    #             a, b = statement.split(">")
-    #             a = part.atributes[a]
-    #             b = int(b)
-    #             if a > b:
-    #                 return ifTrue
-    #             else:
-    #                 i += 1
-    #         else:
-    #             a, b = statement.split("<")
-    #             a = part.atributes[a]
-    #             b = int(b)
-    #             if a < b:
-    #                 return ifTrue
-    #             else:
-    #                 i += 1
-    #     return workflow[i]
+    def getNextFlow(self, workflow, part):
+        i = 0
+        while ">" in workflow[i] or "<" in workflow[i]:
+            statement= workflow[i]
+            if ">" in statement:
+                a, b = statement.split(">")
+                a = part.atributes[a]
+                b = int(b)
+                i = i + 1 if a > b else i + 2
+            else:
+                a, b = statement.split("<")
+                a = part.atributes[a]
+                b = int(b)
+                i = i + 1 if a < b else i + 2
+        return workflow[i]
     
-    def findRejectedPaths(self):
+    
+    def part1(self):
+        s = 0
+        for part in self.parts:
+            if self.acceptsPart(part):
+                s += sum(part.atributes.values())
+        return s
+    
+    def findAcceptedPaths(self):
+        
+        startFlow = self.workflows["in"]
         paths = []
         q = deque()
-        firstStatement = self.workflows["in"][0]
-        q.append((firstStatement, [firstStatement]))
+        q.append((startFlow, 0, [startFlow[0]])) # (workflow, index_in_flow, visited)
         while q:
-            statement, visited = q.popleft()
-            if statement == "R":
+            flow, i, visited = q.popleft()
+            
+            if flow[i] == "R":
+                continue
+            if flow[i] == "A":
                 paths.append(visited)
                 continue
-            if statement == "A":
+                
+            if ">" not in flow[i] and "<" not in flow[i]:
+                flow = self.workflows[flow[i]]
+                statement = flow[0]
+                next_visited = list(visited)
+                next_visited.append(statement)
+                q.append((flow, 0, next_visited))
                 continue
-            
-            v = list(visited)
-            v.append(True)
-            isTrue = self.mapping[statement][0]
-            v.append(isTrue)
-            q.append((isTrue, v))
-            
-            v = list(visited)
-            v.append(False)
-            isFalse = self.mapping[statement][1]
-            v.append(isFalse)
-            q.append((isFalse, v))
-        
+                
+            for b in (True, False):
+                j = i + 1 if b else i + 2
+                _next = flow[j]
+                next_visited = list(visited)
+                next_visited.append(b)
+                if ">" in _next or "<" in _next: 
+                    next_visited.append(_next)
+                q.append((flow, j, next_visited))
         return paths
-            
-            
-        
-    # def part1(self):
-    #     s = 0
-    #     for part in self.parts:
-    #         if self.acceptsPart(part):
-    #             s += sum(part.atributes.values())
-    #     return s
-    
+                
     def part2(self):
-        paths = self.findRejectedPaths()
-        # print(paths)
-        # print(len(paths))
-        combs = 4000**4
-        # self.acceptedRatings = {"x": set(), "m": set(), "a": set(), "s": set()}
+        paths = self.findAcceptedPaths()
+        combs = 0
         
         for path in paths:
-            rejectedRatings = {"x": set(range(1, 4001)), "m": set(range(1, 4001)), "a": set(range(1, 4001)), "s": set(range(1, 4001))}
+            acceptedRatings = {"x": set(range(1, 4001)), "m": set(range(1, 4001)), "a": set(range(1, 4001)), "s": set(range(1, 4001))}
             
             for i in range(len(path)):
-                if path[i] == "R":
+                if path[i] == "A":
                     break
                 if i % 2 == 0:
                     rating = path[i][0]
@@ -134,42 +111,39 @@ class Solution():
                     if op == "<":
                         if path[i + 1]:
                                 #remove >=
-                            rejectedRatings[rating] = rejectedRatings[rating].difference(set(range(num, 4001)))
+                            acceptedRatings[rating] = acceptedRatings[rating].difference(set(range(num, 4001)))
                                 #remove <
                         else:
-                            rejectedRatings[rating] = rejectedRatings[rating].difference(set(range(1, num)))
+                            acceptedRatings[rating] = acceptedRatings[rating].difference(set(range(1, num)))
                     else:
                         if path[i + 1]:
                                 #remove <=
-                            rejectedRatings[rating] = rejectedRatings[rating].difference(set(range(1, num + 1)))
+                            acceptedRatings[rating] = acceptedRatings[rating].difference(set(range(1, num + 1)))
                         else:
                                 #remove >
-                            rejectedRatings[rating] = rejectedRatings[rating].difference(set(range(num + 1, 4001)))
+                            acceptedRatings[rating] = acceptedRatings[rating].difference(set(range(num + 1, 4001)))
                 
             pathCombs = 1
-            for val in rejectedRatings.values():
+            for val in acceptedRatings.values():
                 pathCombs *= len(val)
                 
-            # print(pathCombs)
-            combs -= pathCombs
-            
-            
-        return combs
+            combs += pathCombs
         
-    
+        return combs
+
     
 def main():
     start = time.perf_counter()
     
     s = Solution(test=True)
     print("---TEST---")
-    # print(f"part 1: {s.part1()}")
+    print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}\n")
     
     s = Solution()
     print("---MAIN---")
-    # # print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}") # 150916513783634 - too high
+    print(f"part 1: {s.part1()}")
+    print(f"part 2: {s.part2()}")
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
