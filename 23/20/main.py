@@ -87,6 +87,11 @@ class Solution():
                         
         return lowPulses * highPulses
     
+        """From the input we see that for "rx" to recieve a low pulse, 
+        all the components labeled "bd", "bp", "pm" and "xn" needs to send a low pulse at the same time.
+        We find the length between two clicks where these components send low pulses. Hence, "rx" recieves
+        a low pulse at the lcm of these lengths.
+        """
     def part2(self):
         self.components = self.parse() #reset states
         buttonPushes = 0
