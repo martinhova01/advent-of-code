@@ -1,4 +1,3 @@
-import sys
 import time
 import itertools
 from collections import Counter, defaultdict, deque
@@ -7,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 import re
 
+import sys
 sys.path.append("../..")
 from utils import adjacent4, adjacent8, directions4, directions8
 
