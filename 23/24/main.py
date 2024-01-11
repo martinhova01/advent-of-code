@@ -1,5 +1,6 @@
 import time
 import numpy as np
+from sympy import symbols, Eq, solve
 
 class Solution():
     def __init__(self, test=False):
@@ -24,15 +25,15 @@ class Solution():
         return s
     
     def check_intersection(self, A, B, lower, upper):
-        coordsA = np.array([A[0][0], A[0][1]])
-        coordsB = np.array([B[0][0], B[0][1]])
-        vectorA = np.array([A[1][0], A[1][1]])
-        vectorB = np.array([B[1][0], B[1][1]])
+        coordsA = A[0][:-1]
+        coordsB = B[0][:-1]
+        vectorA = A[1][:-1]
+        vectorB = B[1][:-1]
         a_A = vectorA[1] / vectorA[0]
         a_B = vectorB[1] / vectorB[0]
         
             #parallell
-        if np.all(vectorA / vectorB == vectorA[0] / vectorB[0]):
+        if a_A == a_B:
             return False
         
         f_A = lambda x : a_A * (x - coordsA[0]) + coordsA[1]
@@ -55,8 +56,17 @@ class Solution():
         
     
     def part2(self):
-        return None
-    
+        x, y, z, vx, vy, vz, *t = symbols("x y z vx vy vz t1 t2 t3")
+        eqs = []
+        for i in range(3):
+            coords = self.data[i][0]
+            vector = self.data[i][1]
+            eqs.append(Eq(x + vx * t[i], coords[0] + vector[0] * t[i]))
+            eqs.append(Eq(y + vy * t[i], coords[1] + vector[1] * t[i]))
+            eqs.append(Eq(z + vz * t[i], coords[2] + vector[2] * t[i]))
+            
+        sol = solve(eqs)
+        return sol[0][x] + sol[0][y] + sol[0][z]
     
 def main():
     start = time.perf_counter()
