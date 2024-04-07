@@ -78,12 +78,9 @@ class Solution():
             else:
                 val = self.find_max_preassure(end_valve, new_time, new_open_valves)
                 self.memo[hashable] = val
-            # val = self.find_max_preassure(end_valve, new_time, new_open_valves)
             
             max_value = max(preassure + val, max_value) 
         
-        # if not values:
-        #     return self.get_preassure(bitmask_open_valves) * (30 - time)
         if max_value == 0:
             return self.get_preassure(bitmask_open_valves) * (30 - time)
         return max_value
