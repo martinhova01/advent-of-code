@@ -1,11 +1,11 @@
 import time
-import itertools
-from collections import Counter, defaultdict, deque
+# import itertools
+# from collections import Counter, defaultdict, deque
 import networkx as nx
-from tqdm import tqdm
-import numpy as np
+# from tqdm import tqdm
+# import numpy as np
 import re
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class Solution():
@@ -16,6 +16,9 @@ class Solution():
         self.g: nx.Graph = self.create_graph()
         self.APSP = dict(nx.all_pairs_shortest_path(self.g))
         self.memo = {}
+        self.preassure_memo = {}
+        self.valve_masks = {valve: 1 << i for i, valve in enumerate(self.flow_rates)}
+        # print(self.valve_masks)
         # print(self.flow_rates)
         # print(self.APSP)
         # nx.draw_networkx(self.g)
@@ -40,49 +43,54 @@ class Solution():
         return mapping, flow_rates
             
             
-    def get_preassure(self, open_valves, time):
+    def get_preassure(self, bitmask_open_valves: int):
         s = 0
-        for v in open_valves:
-            s += self.flow_rates[v]
-        return s * time
+        for v in self.flow_rates.keys():
+            if bitmask_open_valves & self.valve_masks[v]:
+                s += self.flow_rates[v]
+        return s
             
             
-    def find_max_preassure(self, valve: str, time: int, open_valves: set):
-        values = []
+    def find_max_preassure(self, valve: str, time: int, bitmask_open_valves: int):
+        max_value = 0
         for end_valve, path in self.APSP[valve].items():
             if end_valve == valve:
                 continue
             
-            if end_valve in open_valves:
+            if self.valve_masks[end_valve] & bitmask_open_valves:
                 continue
             
             if time + len(path) >= 30:
                 continue
             
-            preassure = self.get_preassure(open_valves, len(path))
+            if bitmask_open_valves not in self.preassure_memo:
+                self.preassure_memo[bitmask_open_valves] = self.get_preassure(bitmask_open_valves)
+            preassure = self.preassure_memo[bitmask_open_valves] * len(path)
             
-            new_open_valves = set(open_valves)
-            new_open_valves.add(end_valve)
+            new_open_valves = bitmask_open_valves | self.valve_masks[end_valve]
             
             new_time = time + len(path)
             
-            hashable = (end_valve, new_time, tuple(sorted(list(new_open_valves))))
+            hashable = (end_valve, new_time, new_open_valves)
+            
             if hashable in self.memo:
                 val = self.memo[hashable]
             else:
                 val = self.find_max_preassure(end_valve, new_time, new_open_valves)
                 self.memo[hashable] = val
+            # val = self.find_max_preassure(end_valve, new_time, new_open_valves)
             
-            values.append(preassure + val)
+            max_value = max(preassure + val, max_value) 
         
-        if not values:
-            return self.get_preassure(open_valves, 30 - time)
-        return max(values)
+        # if not values:
+        #     return self.get_preassure(bitmask_open_valves) * (30 - time)
+        if max_value == 0:
+            return self.get_preassure(bitmask_open_valves) * (30 - time)
+        return max_value
             
     def part1(self):
-        open_valves = set()
-        open_valves.add("AA")
-        return self.find_max_preassure("AA", 0, open_valves)
+        open_valves_bitmask = 0 | self.valve_masks["AA"]
+        return self.find_max_preassure("AA", 0, open_valves_bitmask)
     
     def part2(self):
         return None
