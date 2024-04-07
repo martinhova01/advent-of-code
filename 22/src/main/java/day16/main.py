@@ -7,9 +7,6 @@ import numpy as np
 import re
 import matplotlib.pyplot as plt
 
-# import sys
-# sys.path.append("../..")
-# from utils import adjacent4, adjacent8, directions4, directions8
 
 class Solution():
     def __init__(self, test=False):
@@ -50,11 +47,9 @@ class Solution():
         return s * time
             
             
-    def find_max_preassure(self, valve: str, time: int, preassure: int, open_valves: set):
-        # print(valve, time, preassure, open_valves)
+    def find_max_preassure(self, valve: str, time: int, open_valves: set):
         values = []
         for end_valve, path in self.APSP[valve].items():
-            # print(end_valve)
             if end_valve == valve:
                 continue
             
@@ -64,34 +59,30 @@ class Solution():
             if time + len(path) >= 30:
                 continue
             
+            preassure = self.get_preassure(open_valves, len(path))
+            
             new_open_valves = set(open_valves)
             new_open_valves.add(end_valve)
-            # print(new_open_valves)
             
-            hashable = (end_valve, time + len(path), preassure + self.get_preassure(open_valves, len(path)), tuple(sorted(list(new_open_valves))))
-            # print(hashable)
+            new_time = time + len(path)
+            
+            hashable = (end_valve, new_time, tuple(sorted(list(new_open_valves))))
             if hashable in self.memo:
-                # print(time)
-                # print(self.memo)
-                # print(hashable)
-                # print("found")
-                # if not self.test:
-                #     print("found")
                 val = self.memo[hashable]
             else:
-                val = self.find_max_preassure(end_valve, time + len(path), preassure + self.get_preassure(open_valves, len(path)), new_open_valves)
+                val = self.find_max_preassure(end_valve, new_time, new_open_valves)
                 self.memo[hashable] = val
             
-            values.append(val)
+            values.append(preassure + val)
         
         if not values:
-            return preassure + self.get_preassure(open_valves, 30 - time)
+            return self.get_preassure(open_valves, 30 - time)
         return max(values)
             
     def part1(self):
         open_valves = set()
         open_valves.add("AA")
-        return self.find_max_preassure("AA", 0, 0, open_valves)
+        return self.find_max_preassure("AA", 0, open_valves)
     
     def part2(self):
         return None
