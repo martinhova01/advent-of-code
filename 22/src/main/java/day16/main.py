@@ -1,11 +1,6 @@
 import time
-# import itertools
-# from collections import Counter, defaultdict, deque
 import networkx as nx
-# from tqdm import tqdm
-# import numpy as np
 import re
-# import matplotlib.pyplot as plt
 
 
 class Solution():
@@ -15,14 +10,7 @@ class Solution():
         self.mapping, self.flow_rates = self.parse()
         self.g: nx.Graph = self.create_graph()
         self.APSP = dict(nx.all_pairs_shortest_path(self.g))
-        self.memo = {}
-        # self.preassure_memo = {}
         self.valve_masks = {valve: 1 << i for i, valve in enumerate(self.flow_rates)}
-        # print(self.valve_masks)
-        # print(self.flow_rates)
-        # print(self.APSP)
-        # nx.draw_networkx(self.g)
-        # plt.show()
         
     def create_graph(self):
         g = nx.Graph()
@@ -41,18 +29,12 @@ class Solution():
             flow_rates[valve] = flow
             mapping[valve] = set(valves)
         return mapping, flow_rates
+    
             
-            
-    def get_preassure(self, bitmask_open_valves: int):
-        s = 0
-        for v in self.flow_rates.keys():
-            if bitmask_open_valves & self.valve_masks[v]:
-                s += self.flow_rates[v]
-        return s
-            
-            
-    def find_max_preassure(self, valve: str, time: int, bitmask_open_valves: int):
-        max_value = 0
+    def find_max_pressure(self, valve: str, time: int, pressure, bitmask_open_valves: int, best: dict[int, int]):
+        
+        best[bitmask_open_valves] = max(best.get(bitmask_open_valves, 0), pressure)
+        
         for end_valve, path in self.APSP[valve].items():
             if self.flow_rates[end_valve] == 0:
                 continue
@@ -62,37 +44,31 @@ class Solution():
             if self.valve_masks[end_valve] & bitmask_open_valves:
                 continue
             
-            if time - len(path) <= 0:
+
+            new_time = time - len(path)
+            if new_time <= 0:
                 continue
             
-            preassure = self.get_preassure(bitmask_open_valves) * len(path)
+            new_preassure = pressure + new_time * self.flow_rates[end_valve]
             
             new_open_valves = bitmask_open_valves | self.valve_masks[end_valve]
             
-            new_time = time - len(path)
+            self.find_max_pressure(end_valve, new_time, new_preassure, new_open_valves, best)
             
-            hashable = (end_valve, new_time, new_open_valves)
-            
-            if hashable in self.memo:
-                val = self.memo[hashable]
-            else:
-                val = self.find_max_preassure(end_valve, new_time, new_open_valves)
-                self.memo[hashable] = val
-                
-            if preassure + val > max_value:
-                max_value = preassure + val
-        
-        if max_value == 0:
-            return self.get_preassure(bitmask_open_valves) * time
-        return max_value
+        return best
             
     def part1(self):
-        return self.find_max_preassure("AA", 30, 0, )
+        return max(self.find_max_pressure("AA", 30, 0, 0, {}).values())
         
     
     def part2(self):
-        pass
-    
+        best = self.find_max_pressure("AA", 26, 0, 0, {})
+        return max(
+            press1 + press2
+            for bitmask1, press1 in best.items()
+            for bitmask2, press2 in best.items()
+            if not bitmask1 & bitmask2
+        )
     
 def main():
     start = time.perf_counter()
@@ -105,7 +81,7 @@ def main():
     s = Solution()
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}") #1762 too low
+    print(f"part 2: {s.part2()}")
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
