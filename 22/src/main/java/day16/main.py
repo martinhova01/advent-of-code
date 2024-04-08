@@ -16,7 +16,7 @@ class Solution():
         self.g: nx.Graph = self.create_graph()
         self.APSP = dict(nx.all_pairs_shortest_path(self.g))
         self.memo = {}
-        self.preassure_memo = {}
+        # self.preassure_memo = {}
         self.valve_masks = {valve: 1 << i for i, valve in enumerate(self.flow_rates)}
         # print(self.valve_masks)
         # print(self.flow_rates)
@@ -54,22 +54,22 @@ class Solution():
     def find_max_preassure(self, valve: str, time: int, bitmask_open_valves: int):
         max_value = 0
         for end_valve, path in self.APSP[valve].items():
+            if self.flow_rates[end_valve] == 0:
+                continue
             if end_valve == valve:
                 continue
             
             if self.valve_masks[end_valve] & bitmask_open_valves:
                 continue
             
-            if time + len(path) >= 30:
+            if time - len(path) <= 0:
                 continue
             
-            if bitmask_open_valves not in self.preassure_memo:
-                self.preassure_memo[bitmask_open_valves] = self.get_preassure(bitmask_open_valves)
-            preassure = self.preassure_memo[bitmask_open_valves] * len(path)
+            preassure = self.get_preassure(bitmask_open_valves) * len(path)
             
             new_open_valves = bitmask_open_valves | self.valve_masks[end_valve]
             
-            new_time = time + len(path)
+            new_time = time - len(path)
             
             hashable = (end_valve, new_time, new_open_valves)
             
@@ -78,19 +78,20 @@ class Solution():
             else:
                 val = self.find_max_preassure(end_valve, new_time, new_open_valves)
                 self.memo[hashable] = val
-            
-            max_value = max(preassure + val, max_value) 
+                
+            if preassure + val > max_value:
+                max_value = preassure + val
         
         if max_value == 0:
-            return self.get_preassure(bitmask_open_valves) * (30 - time)
+            return self.get_preassure(bitmask_open_valves) * time
         return max_value
             
     def part1(self):
-        open_valves_bitmask = 0 | self.valve_masks["AA"]
-        return self.find_max_preassure("AA", 0, open_valves_bitmask)
+        return self.find_max_preassure("AA", 30, 0, )
+        
     
     def part2(self):
-        return None
+        pass
     
     
 def main():
@@ -104,7 +105,7 @@ def main():
     s = Solution()
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}")
+    print(f"part 2: {s.part2()}") #1762 too low
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
