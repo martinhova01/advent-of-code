@@ -1,5 +1,4 @@
 import time
-from tqdm import tqdm
 
 class Solution():
     def __init__(self, test=False):
@@ -14,6 +13,7 @@ class Solution():
         ]
         self.jets = open(self.filename).read().strip()
         self.chamber = set()
+        self.heights = []
         
     def draw(self, y_range: int):
         r = ""
@@ -24,9 +24,7 @@ class Solution():
                 else:
                     r += "."
             r += "\n"   
-        print(r)
-        
-            
+        print(r)  
         
         
     def sim(self, times):
@@ -35,7 +33,7 @@ class Solution():
         max_y = 0
         
         for i in range(times):
-            
+            self.heights.append(max_y + 1)
             piece = self.rocks[i % 5]
         
             x = 2
@@ -61,16 +59,28 @@ class Solution():
             for dx, dy in piece:
                 self.chamber.add((x + dx, y + dy))
                 max_y = max(max_y, y + dy)
-                
-        return max_y
-                
-               
-        
+             
+        return max_y + 1
+         
+                   
     def part1(self):
         return self.sim(2022)
     
     def part2(self):
-        pass
+       
+            #found these values by manually testing where the cycle was
+        start_x = 1600   
+        cycle_length = 1725
+        
+        self.chamber = set()
+        self.heights = []
+        self.sim(start_x + cycle_length + 1)
+        
+            
+        startval = self.heights[start_x]
+        step = self.heights[start_x + cycle_length] - self.heights[start_x]
+        cycles = 1_000_000_000_000 // cycle_length
+        return step * cycles + startval
     
     
 def main():
@@ -79,7 +89,7 @@ def main():
     s = Solution(test=True)
     print("---TEST---")
     print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}\n")
+    # print(f"part 2: {s.part2()}\n")
     
     s = Solution()
     print("---MAIN---")
