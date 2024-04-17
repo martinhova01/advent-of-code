@@ -1,7 +1,6 @@
 import time
 
-
-def rotate_point_x(point: tuple[int, int, int], positive_dir: bool) -> tuple[int, int, int]:
+def rotate_point_x(point: tuple[float, float, float], positive_dir: bool) -> tuple[float, float, float]:
     """Rotate a point along the x-axis.
 
     Args:
@@ -16,7 +15,7 @@ def rotate_point_x(point: tuple[int, int, int], positive_dir: bool) -> tuple[int
     else:
         return (point[0], point[2], -point[1])
 
-def rotate_point_y(point: tuple[int, int, int], positive_dir: bool) -> tuple[int, int, int]:
+def rotate_point_y(point: tuple[float, float, float], positive_dir: bool) -> tuple[float, float, float]:
     """Rotate a point along the y-axis.
 
     Args:
@@ -33,16 +32,16 @@ def rotate_point_y(point: tuple[int, int, int], positive_dir: bool) -> tuple[int
         
 
 class Cube():
-    """The front face has z = 25
-        the back face has z = -25
-        the top face has y = -25
-        the bottom face has y = 25
-        the left face has x = -25
-        the right face has x = 25
+    """The front face has z = 25.5
+        the back face has z = -25.5
+        the top face has y = -25.5
+        the bottom face has y = 25.5
+        the left face has x = -25.5
+        the right face has x = 25.5
     """
     def __init__(self, filename):
         self.filename = filename
-        self.walls: set[tuple[int, int, int]] = self.parse_cube()
+        self.walls: set[tuple[float, float, float]] = self.parse_cube()
         
     def rotate_x(self, positive_dir: bool):
         new_walls = set()
@@ -56,17 +55,17 @@ class Cube():
             new_walls.add(rotate_point_y(wall, positive_dir))
         self.walls = new_walls
         
-    def parse_cube(self) -> set[tuple[int, int, int]]:
+    def parse_cube(self) -> set[tuple[float, float, float]]:
         walls = set()
         lines = open(self.filename).read().split("\n")[:-2]
         
-        z = 25
+        z = 25.5
         #top
         top_face = set()
         for x in range(50, 100):
             for y in range(50):
                 if lines[y][x] == "#":
-                    top_face.add((x - 50 - 25, y - 25, z))
+                    top_face.add((x - 50 - 24.5, y - 24.5, z))
         
         for point in top_face:
             walls.add(rotate_point_x(point, True))
@@ -77,7 +76,7 @@ class Cube():
         for x in range(100, 150):
             for y in range(50):
                 if lines[y][x] == "#":
-                    right_face.add((x - 100 - 25, y - 25, z))
+                    right_face.add((x - 100 - 24.5, y - 24.5, z))
                     
         for point in right_face:
             walls.add(rotate_point_x(rotate_point_y(point, True), True))
@@ -87,7 +86,7 @@ class Cube():
         for x in range(50, 100):
             for y in range(50, 100):
                 if lines[y][x] == "#":
-                    front_face.add((x - 50 - 25, y - 50 - 25, z))
+                    front_face.add((x - 50 - 24.5, y - 50 - 24.5, z))
         
         for point in front_face:
             walls.add(point)
@@ -97,7 +96,7 @@ class Cube():
         for x in range(50, 100):
             for y in range(100, 150):
                 if lines[y][x] == "#":
-                    bottom_face.add((x - 50 - 25, y - 100 - 25, z))
+                    bottom_face.add((x - 50 - 24.5, y - 100 - 24.5, z))
         
         for point in bottom_face:
             walls.add(rotate_point_x(point, False))
@@ -107,7 +106,7 @@ class Cube():
         for x in range(50):
             for y in range(100, 150):
                 if lines[y][x] == "#":
-                    left_face.add((x - 25, y - 100 - 25, z))
+                    left_face.add((x - 24.5, y - 100 - 24.5, z))
                     
         for point in left_face:
             walls.add(rotate_point_x(rotate_point_y(point, False), False))
@@ -117,7 +116,7 @@ class Cube():
         for x in range(50):
             for y in range(150, 200):
                 if lines[y][x] == "#":
-                    back_face.add((x - 25, y - 150 - 25, z))
+                    back_face.add((x - 24.5, y - 150 - 24.5, z))
                     
         for point in back_face:
             walls.add(rotate_point_y(rotate_point_x(rotate_point_y(point, False), False), False))
@@ -198,10 +197,9 @@ class Solution():
     
     def part2(self):
         cube = Cube(self.filename)
-        
         rotations = [("x", False)]
-        cube.rotate_x(False)
-        x, y, z = -25, -25, 25
+        cube.rotate_x(False) # start position is on the top-face
+        x, y, z = -24.5, -24.5, 25.5
         dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
         dir = dirs[0]
         
@@ -215,35 +213,35 @@ class Solution():
                 for _ in range(int(step)):
                     nx, ny = x + dir[0], y + dir[1]
                     
-                    if nx == -26:
+                    if nx <= -25.5:
                         cube.rotate_y(True)
-                        nx = 25
+                        nx = 24.5
                         if (nx, ny, z) in cube.walls:
                             cube.rotate_y(False) #undo rotate
                             break
                         rotations.append(("y", True))
                         
-                    if nx == 26:
+                    if nx >= 25.5:
                         cube.rotate_y(False)
-                        nx = -25
+                        nx = -24.5
                         if (nx, ny, z) in cube.walls:
-                            cube.rotate_y(True)
+                            cube.rotate_y(True) #undo rotate
                             break
                         rotations.append(("y", False))
                         
-                    if ny == -26:
+                    if ny <= -25.5:
                         cube.rotate_x(False)
-                        ny = 25
+                        ny = 24.5
                         if (nx, ny, z) in cube.walls:
-                            cube.rotate_x(True)
+                            cube.rotate_x(True) #undo rotate
                             break
                         rotations.append(("x", False))
                         
-                    if ny == 26:
+                    if ny >= 25.5:
                         cube.rotate_x(True)
-                        ny = -25
+                        ny = -24.5
                         if (nx, ny, z) in cube.walls:
-                            cube.rotate_x(False)
+                            cube.rotate_x(False) #undo rotate
                             break
                         rotations.append(("x", True))
                         
@@ -252,8 +250,8 @@ class Solution():
                     
                     x, y = nx, ny
                     
+                    
         dir = (dir[0], dir[1], 0)
-        print(x, y, z, dir)
         
             #do the rotations backwards to find out what face the final position is on
         for i in range(len(rotations) - 1, -1, -1):
@@ -265,17 +263,17 @@ class Solution():
                 x, y, z = rotate_point_y((x, y, z), not rotation[1])
                 dir = rotate_point_y(dir, not rotation[1])
                 
-        print(x, y, z, dir)
         
+            #unfold left-face to map rotation
             #change these based on what face the final position is on
-        x, y, z = rotate_point_y(rotate_point_x(rotate_point_y((x, y, z), True), True), True) # unfold back-face to map rotation
-        dir = rotate_point_y(rotate_point_x(rotate_point_y(dir, True), True), True)
+        x, y, z = rotate_point_y(rotate_point_x((x, y, z), True), True)
+        dir = rotate_point_y(rotate_point_x(dir, True), True)
         
-        print(x, y, z, dir)
         
+            #find the row- and colnumber based on what face the final position is on
             #change these based on what face the final position is on
-        row = y + 150 + 25 + 1
-        col = x + 25 + 1
+        row = int(y + 100 + 24.5 + 1)
+        col = int(x + 0 + 24.5 + 1)
         
         dir = dirs.index((dir[0], dir[1]))
         
@@ -292,17 +290,13 @@ def main():
     s = Solution(test=True)
     print("---TEST---")
     print(f"part 1: {s.part1()}")
-    # print(f"part 2: {s.part2()}\n")
     
     s = Solution()
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}") # 15591 too low / 143203 too high / 143200 not right answer
+    print(f"part 2: {s.part2()}")
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
-    
-    # x, y, z = 25, 0, -25
-    # print(rotate_point_y((x, y, z), False))
     
     
 main()
