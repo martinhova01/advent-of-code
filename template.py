@@ -1,10 +1,12 @@
 import time
 import itertools
+import functools
 from collections import Counter, defaultdict, deque
 import networkx as nx
 from tqdm import tqdm
 import numpy as np
 import re
+import copy
 
 import sys
 sys.path.append("../..")
