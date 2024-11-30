@@ -26,6 +26,12 @@ def download_input(year, day):
     except requests.exceptions.RequestException as e:
         print(f"{Fore.RED}An error occurred while downloading the file: {e}{Fore.WHITE}")
         
+        file = f"{year}/{day}/input.txt"
+        if not os.path.isfile(file):
+            with open(file, "w") as f:
+                pass
+        print("Empty input file created.")
+        
 def copy_template_file():
     source = "template.py"
     dest = f"{year}/{day}/main.py"
