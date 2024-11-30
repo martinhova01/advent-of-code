@@ -5,6 +5,7 @@ import requests
 from dotenv import load_dotenv
 from colorama import Fore
 from datetime import datetime
+import webbrowser
 
 
 def download_input(year, day):
@@ -72,4 +73,6 @@ if __name__ == "__main__":
         download_input(year, day)
     
     copy_template_file()
+    
+    webbrowser.open(f"https://adventofcode.com/20{year}/day/{str(int(day))}")
     
