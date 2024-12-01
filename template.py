@@ -16,7 +16,7 @@ class Solution():
     def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
-        self.data = open(self.filename).read()
+        self.data = open(self.filename).read().rstrip()
         
     def part1(self):
         return None
