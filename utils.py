@@ -15,3 +15,6 @@ def adjacent8(x: int, y: int) -> list[tuple[int, int]]:
 
 def manhattanDist(x1, y1, x2, y2) -> int|float:
     return abs(x1 - x2) + abs(y1 - y2)
+
+def rot90(x, y, clock_wise = True) -> tuple[int, int]:
+    return (-y, x) if clock_wise else (y, -x)
