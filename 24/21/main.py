@@ -38,47 +38,54 @@ class Solution():
             ">": (2, 1)
         }
         
-    def find_sequence(self, target: str):
-        sequences = [""]
-        x, y, = None, None
-        if target[:-1].isnumeric():
-            x, y = 2, 3
-            for c in target:
-                goal = self.numbers[c]
-                dx, dy = goal[0] - x, goal[1] - y
-                addition_x = ""
-                if dx < 0:
-                    addition_x = "<" * abs(dx)
-                else:
-                    addition_x = ">" * dx
+    def find_sequences_numerical(self, target: str):
+        sequences = {""}
+        x, y = 2, 3
+        for c in target:
+            goal = self.numbers[c]
+            dx, dy = goal[0] - x, goal[1] - y
+            addition_x = ""
+            if dx < 0:
+                addition_x = "<" * abs(dx)
+            else:
+                addition_x = ">" * dx
+            
+            addition_y = ""
+            if dy < 0:
+                addition_y = "^" * abs(dy)
+            else:
+                addition_y = "v" * dy
                 
-                addition_y = ""
-                if dy < 0:
-                    addition_y = "^" * abs(dy)
-                else:
-                    addition_y = "v" * dy
-                    
-                if x == 0 and goal[1] == 3:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_x + addition_y + "A")
-                    sequences = new_sequences
-                
-                elif y == 3 and goal[0] == 0:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_y + addition_x + "A")
-                    sequences = new_sequences
-                
-                else:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_x + addition_y + "A")
-                        new_sequences.append(seq + addition_y + addition_x + "A")
-                    sequences = new_sequences
-                x, y = goal
-                      
-        else:
+            if x == 0 and goal[1] == 3:
+                new_sequences = set()
+                for seq in sequences:
+                    new_sequences.add(seq + addition_x + addition_y + "A")
+                sequences = new_sequences
+            
+            elif y == 3 and goal[0] == 0:
+                new_sequences = set()
+                for seq in sequences:
+                    new_sequences.add(seq + addition_y + addition_x + "A")
+                sequences = new_sequences
+            
+            else:
+                new_sequences = set()
+                for seq in sequences:
+                    new_sequences.add(seq + addition_x + addition_y + "A")
+                    new_sequences.add(seq + addition_y + addition_x + "A")
+                sequences = new_sequences
+            x, y = goal
+            
+        return sequences
+            
+        
+        
+    def find_sequences_directional(self, targets: set[str]):
+        result = set()
+        
+        for target in targets:
+            sequences = {""}
+        
             x, y = 2, 0
             for c in target:
                 goal = self.directions[c]
@@ -114,19 +121,28 @@ class Solution():
                         new_sequences.append(seq + addition_y + addition_x + "A")
                     sequences = new_sequences
                 x, y = goal
+            result = result.union(sequences)
         
-        return min(sequences, key=len)
+        return result
             
         
         
                 
     def part1(self):
+        
         s = 0
         for i in range(len(self.data)):
-            sequence = self.data[i]
-            for _ in range(3):
-                sequence = self.find_sequence(sequence)
             
+            sequences = self.find_sequences_numerical(self.data[i])
+            print(sequences)
+            sequences = self.find_sequences_directional(sequences)
+            print(sequences)
+            sequences = self.find_sequences_directional(sequences)
+            # length = len(list(sequences)[0])
+            # for s in sequences:
+            #     if len(s) != length:
+            #         print("different!")
+            sequence = min(sequences, key=len)
             print(sequence, len(sequence), int(self.data[i][:-1]))
             
             s += len(sequence) * int(self.data[i][:-1])
@@ -141,10 +157,10 @@ class Solution():
 def main():
     start = time.perf_counter()
     
-    s = Solution(test=True)
-    print("---TEST---")
-    print(f"part 1: {s.part1()}")
-    print(f"part 2: {s.part2()}\n")
+    # s = Solution(test=True)
+    # print("---TEST---")
+    # print(f"part 1: {s.part1()}")
+    # print(f"part 2: {s.part2()}\n")
     
     s = Solution()
     print("---MAIN---")
