@@ -1,16 +1,5 @@
 import time
-import itertools
-import functools
-from collections import Counter, defaultdict, deque
-import networkx as nx
-from tqdm import tqdm
-import numpy as np
-import re
-import copy
-
-import sys
-sys.path.append("../..")
-from utils import adjacent4, adjacent8, directions4, directions8, manhattanDist
+from functools import cache
 
 class Solution():
     def __init__(self, test=False):
@@ -37,57 +26,51 @@ class Solution():
             "v": (1, 1),
             ">": (2, 1)
         }
+        self.memo = {}
+    
+    @cache
+    def shortest_sequence(self, sequence: str, steps):
+        if steps == 0:
+            return len(sequence)
         
-    def find_sequences_numerical(self, target: str):
-        sequences = {""}
-        x, y = 2, 3
-        for c in target:
-            goal = self.numbers[c]
-            dx, dy = goal[0] - x, goal[1] - y
-            addition_x = ""
-            if dx < 0:
-                addition_x = "<" * abs(dx)
-            else:
-                addition_x = ">" * dx
-            
-            addition_y = ""
-            if dy < 0:
-                addition_y = "^" * abs(dy)
-            else:
-                addition_y = "v" * dy
+        s = 0   
+        if sequence[:-1].isnumeric():
+            x, y = 2, 3
+            for c in sequence:
+                goal = self.numbers[c]
+                dx, dy = goal[0] - x, goal[1] - y
+                addition_x = ""
+                if dx < 0:
+                    addition_x = "<" * abs(dx)
+                else:
+                    addition_x = ">" * dx
                 
-            if x == 0 and goal[1] == 3:
+                addition_y = ""
+                if dy < 0:
+                    addition_y = "^" * abs(dy)
+                else:
+                    addition_y = "v" * dy
+                    
                 new_sequences = set()
-                for seq in sequences:
-                    new_sequences.add(seq + addition_x + addition_y + "A")
-                sequences = new_sequences
-            
-            elif y == 3 and goal[0] == 0:
-                new_sequences = set()
-                for seq in sequences:
-                    new_sequences.add(seq + addition_y + addition_x + "A")
-                sequences = new_sequences
-            
-            else:
-                new_sequences = set()
-                for seq in sequences:
-                    new_sequences.add(seq + addition_x + addition_y + "A")
-                    new_sequences.add(seq + addition_y + addition_x + "A")
-                sequences = new_sequences
-            x, y = goal
-            
-        return sequences
-            
-        
-        
-    def find_sequences_directional(self, targets: set[str]):
-        result = set()
-        
-        for target in targets:
-            sequences = {""}
-        
+                if x == 0 and goal[1] == 3:
+                    new_sequences.add(addition_x + addition_y + "A")
+                
+                elif y == 3 and goal[0] == 0:
+                    new_sequences.add(addition_y + addition_x + "A")
+                
+                else:
+                    new_sequences.add(addition_x + addition_y + "A")
+                    new_sequences.add(addition_y + addition_x + "A")
+                
+                best = float("inf")
+                for seq in new_sequences:
+                    best = min(best, self.shortest_sequence(seq, steps - 1))
+                x, y = goal
+                s += best
+                
+        else:
             x, y = 2, 0
-            for c in target:
+            for c in sequence:
                 goal = self.directions[c]
                 dx, dy = goal[0] - x, goal[1] - y
                 addition_x = ""
@@ -102,69 +85,50 @@ class Solution():
                 else:
                     addition_y = "v" * dy
                     
+                new_sequences = set()   
                 if x == 0 and y == 1:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_x + addition_y + "A")
-                    sequences = new_sequences
+                    new_sequences.add(addition_x + addition_y + "A")
                 
                 elif y == 0 and goal[0] == 0:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_y + addition_x + "A")
-                    sequences = new_sequences
+                    new_sequences.add(addition_y + addition_x + "A")
                 
                 else:
-                    new_sequences = []
-                    for seq in sequences:
-                        new_sequences.append(seq + addition_x + addition_y + "A")
-                        new_sequences.append(seq + addition_y + addition_x + "A")
-                    sequences = new_sequences
+                    new_sequences.add(addition_x + addition_y + "A")
+                    new_sequences.add(addition_y + addition_x + "A")
+                    
+                best = float("inf")
+                for seq in new_sequences:
+                    best = min(best, self.shortest_sequence(seq, steps - 1))
                 x, y = goal
-            result = result.union(sequences)
-        
-        return result
+                s += best
+                
+        return s
+            
+            
+            
             
         
         
                 
     def part1(self):
-        
-        s = 0
-        for i in range(len(self.data)):
-            
-            sequences = self.find_sequences_numerical(self.data[i])
-            print(sequences)
-            sequences = self.find_sequences_directional(sequences)
-            print(sequences)
-            sequences = self.find_sequences_directional(sequences)
-            # length = len(list(sequences)[0])
-            # for s in sequences:
-            #     if len(s) != length:
-            #         print("different!")
-            sequence = min(sequences, key=len)
-            print(sequence, len(sequence), int(self.data[i][:-1]))
-            
-            s += len(sequence) * int(self.data[i][:-1])
+        return sum(self.shortest_sequence(num, 3) * int(num[:-1]) for num in self.data)
 
-        return s
-        
     
     def part2(self):
-        return None
+        return sum(self.shortest_sequence(num, 26) * int(num[:-1]) for num in self.data)
     
     
 def main():
     start = time.perf_counter()
     
-    # s = Solution(test=True)
-    # print("---TEST---")
-    # print(f"part 1: {s.part1()}")
-    # print(f"part 2: {s.part2()}\n")
+    s = Solution(test=True)
+    print("---TEST---")
+    print(f"part 1: {s.part1()}")
+    print(f"part 2: {s.part2()}\n")
     
     s = Solution()
     print("---MAIN---")
-    print(f"part 1: {s.part1()}") # 131526 too high
+    print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
