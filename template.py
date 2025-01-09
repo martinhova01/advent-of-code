@@ -7,6 +7,7 @@ from tqdm import tqdm
 import numpy as np
 import re
 import copy
+from functools import cache
 
 import sys
 sys.path.append("../..")
