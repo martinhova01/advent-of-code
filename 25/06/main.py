@@ -1,49 +1,31 @@
 import time
-import itertools
 import functools
-from collections import Counter, defaultdict, deque
-import networkx as nx
-from tqdm import tqdm
 import numpy as np
 import re
-import copy
-from functools import cache
-
-import sys
-
-sys.path.append("../..")
-from utils import adjacent4, adjacent8, directions4, directions8, manhattanDist
 
 
 class Solution:
     def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
-        self.data = [
+
+    def part1(self):
+        data = [
             list(map(int, re.findall(r"-?\d+", line)))
             for line in open(self.filename).read().rstrip().split("\n")
         ][:-1]
-        self.operations = (
+        
+        operations = (
             open(self.filename).read().rstrip().split("\n")[-1].replace(" ", "")
         )
-
-    def part1(self):
-        Y = len(self.data)
-        X = len(self.data[0])
-
+        
         tot = 0
-        for x in range(X):
-            res = None
-            if self.operations[x] == "*":
-                res = 1
+        transposed = np.transpose(data).tolist()
+        for i, col in enumerate(transposed):
+            if operations[i] == "*":
+                tot += functools.reduce(lambda x, y: x * y, col)
             else:
-                res = 0
-            for y in range(Y):
-                if self.operations[x] == "*":
-                    res *= self.data[y][x]
-                else:
-                    res += self.data[y][x]
-            tot += res
+                tot += sum(col)
 
         return tot
 
@@ -66,7 +48,7 @@ class Solution:
                 c = data[y][x]
                 if c == " ":
                     continue
-                if c.isnumeric():
+                elif c.isnumeric():
                     num += c
                 else:
                     op = c
@@ -80,43 +62,10 @@ class Solution:
                 else:
                     tmp += num
 
+        # last number is not added since there are no empty column at the end
         tot += tmp
-
+        
         return tot
-
-        # transposed = np.transpose(self.data).tolist()
-        # print(transposed)
-
-        # tot = 0
-        # for i, col in enumerate(transposed):
-        #     length = 0
-        #     for num in col:
-        #         length = max(length, len(str(num)))
-        #     if self.operations[i] == "*":
-        #         res = 1
-        #     else:
-        #         res = 0
-        #     for j in range(length):
-        #         num = ""
-        #         for n in col:
-        #             n = str(n)
-        #             if len(n) < j + 1:
-        #                 continue
-        #             num += n[-1 -j]
-
-        #         num = int(num)
-
-        #         print(num)
-        #         if self.operations[i] == "*":
-        #             res *= num
-        #         else:
-        #             res += num
-
-        #     print(res)
-
-        #     tot += res
-
-        # return tot
 
 
 def main():
