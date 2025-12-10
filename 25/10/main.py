@@ -1,117 +1,126 @@
 import time
-import itertools
-import functools
-from collections import Counter, defaultdict, deque
-import networkx as nx
-from tqdm import tqdm
-import numpy as np
+from collections import deque
 import re
-import copy
-from functools import cache
+import pulp
 
-import sys
-sys.path.append("../..")
-from utils import adjacent4, adjacent8, directions4, directions8, manhattanDist
 
-class Solution():
+class Solution:
     def __init__(self, test=False):
         self.test = test
         self.filename = "testinput.txt" if self.test else "input.txt"
-        self.data = [self.parse_line(line) for line in open(self.filename).read().rstrip().split("\n")]
-        
+        self.data = [
+            self.parse_line(line)
+            for line in open(self.filename).read().rstrip().split("\n")
+        ]
 
     def parse_line(self, line):
-        # Extract square-bracket string
         square = re.search(r"\[(.*?)\]", line).group(1)
-        square = int(square.replace("#", "1").replace(".", "0")[::-1], 2)
 
-        # Extract parenthesis groups as list of tuples
         parens = []
         for grp in re.findall(r"\((.*?)\)", line):
             nums = tuple(int(x) for x in grp.split(",")) if grp else ()
-            num = int("".join(reversed(["1" if i in nums else "0" for i in range(max(nums) + 1)])), 2)
-            parens.append(num)
+            parens.append(nums)
 
-        # Extract curly-bracket list of ints
         curly = [int(x) for x in re.search(r"\{(.*?)\}", line).group(1).split(",")]
 
         return square, parens, curly
-    
+
     def get_num_presses(self, goal: int, buttons: list[int]) -> int:
-        
+
         visited = set()
-        q = deque([(0, 0)]) # indicator, clicks
-        
+        q = deque([(0, 0)])  # indicator, clicks
+
         while q:
-            
+
             indicators, clicks = q.popleft()
-            # print(indicators, clicks)
             if indicators in visited:
                 continue
             visited.add(indicators)
-            
+
             if indicators == goal:
                 return clicks
-            
+
             for button in buttons:
-                # print(indicators, button)
                 next_indicators = indicators ^ button
-                
+
                 q.append((next_indicators, clicks + 1))
-            
-            
-        
+
     def part1(self):
         s = 0
         for indicators, buttons, _ in self.data:
-            print(indicators, buttons)
+            indicators = int(indicators.replace("#", "1").replace(".", "0")[::-1], 2)
+
+            new_buttons = []
+            for button in buttons:
+                button = int(
+                    "".join(
+                        reversed(
+                            [
+                                "1" if i in button else "0"
+                                for i in range(max(button) + 1)
+                            ]
+                        )
+                    ),
+                    2,
+                )
+                new_buttons.append(button)
+            buttons = new_buttons
             s += self.get_num_presses(indicators, buttons)
         return s
-    
-    
-    def get_num_presses_2(self, goal: int, buttons: list[int]) -> int:
-        
-        visited = set()
-        q = deque([(0, 0)]) # indicator, clicks
-        
-        while q:
-            
-            indicators, clicks = q.popleft()
-            # print(indicators, clicks)
-            if indicators in visited:
-                continue
-            visited.add(indicators)
-            
-            if indicators == goal:
-                return clicks
-            
-            for button in buttons:
-                # print(indicators, button)
-                next_indicators = indicators ^ button
-                
-                q.append((next_indicators, clicks + 1))
-    
+
     def part2(self):
         s = 0
         for _, buttons, joltage in self.data:
-            print(joltage, buttons)
-            # s += self.get_num_presses(joltage, buttons)
-        return s
-    
-    
+
+            A = []
+            for i in range(len(joltage)):
+                line = []
+                for button in buttons:
+                    if i in button:
+                        line.append(1)
+                    else:
+                        line.append(0)
+                A.append(line)
+
+            b = joltage
+            num_buttons = len(buttons)
+
+            prob = pulp.LpProblem("ButtonPresses", pulp.LpMinimize)
+            x_vars = [
+                pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer")
+                for i in range(num_buttons)
+            ]
+
+            # objective
+            prob += pulp.lpSum(x_vars)
+
+            # Add equality constraints
+            for row_idx, row in enumerate(A):
+                prob += (
+                    pulp.lpSum(row[j] * x_vars[j] for j in range(num_buttons))
+                    == b[row_idx]
+                )
+
+            prob.solve(pulp.PULP_CBC_CMD(msg=False))
+
+            s += sum([x.value() for x in x_vars])
+        return int(s)
+
+
 def main():
     start = time.perf_counter()
-    
+
     s = Solution(test=True)
     print("---TEST---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}\n")
-    
-    # s = Solution()
-    # print("---MAIN---")
-    # print(f"part 1: {s.part1()}")
-    # print(f"part 2: {s.part2()}")
-    
+
+    s = Solution()
+    print("---MAIN---")
+    print(f"part 1: {s.part1()}")
+    print(f"part 2: {s.part2()}")
+
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
-    
+
+
 main()
